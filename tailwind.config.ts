@@ -19,6 +19,24 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        
+        // LegalLens AI Brand Colors
+        "legal-primary": "hsl(var(--legal-primary))",
+        "legal-primary-light": "hsl(var(--legal-primary-light))",
+        "legal-primary-dark": "hsl(var(--legal-primary-dark))",
+        "legal-secondary": "hsl(var(--legal-secondary))",
+        "legal-accent": "hsl(var(--legal-accent))",
+        "legal-gray": {
+          50: "hsl(var(--legal-gray-50))",
+          100: "hsl(var(--legal-gray-100))",
+          200: "hsl(var(--legal-gray-200))",
+          300: "hsl(var(--legal-gray-300))",
+          900: "hsl(var(--legal-gray-900))",
+        },
+        "legal-success": "hsl(var(--legal-success))",
+        "legal-warning": "hsl(var(--legal-warning))",
+        "legal-danger": "hsl(var(--legal-danger))",
+        "legal-info": "hsl(var(--legal-info))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -57,6 +75,11 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+      },
+      backgroundImage: {
+        "gradient-legal-primary": "var(--gradient-legal-primary)",
+        "gradient-legal-subtle": "var(--gradient-legal-subtle)",
+        "gradient-legal-card": "var(--gradient-legal-card)",
       },
       borderRadius: {
         lg: "var(--radius)",
