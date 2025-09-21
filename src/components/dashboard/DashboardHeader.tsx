@@ -19,35 +19,30 @@ const DashboardHeader = () => {
             <Scale className="h-12 w-12 text-white" />
             <h1 className="text-4xl font-bold">LegalLens AI</h1>
           </div>
-          <p className="text-xl text-blue-100 mb-8 leading-relaxed">
-            Comprehensive legal document analysis system with AI-powered risk assessment, 
-            multi-language support, and intelligent insights for modern legal practice.
+          <p className="text-xl text-blue-100 mb-8 leading-relaxed animate-fade-in">
+            🚀 AI-Powered Legal Document Analysis • Multi-Language Support • Real-time Risk Assessment
           </p>
-          <div className="flex flex-wrap gap-4 mb-8">
-            <Button variant="secondary" size="lg" className="bg-white text-legal-primary hover:bg-legal-gray-50">
+          <div className="flex flex-wrap gap-4 mb-8 animate-slide-up">
+            <Button variant="secondary" size="lg" className="bg-white text-legal-primary hover:bg-legal-gray-50 hover:scale-105 transition-all duration-300 animate-pulse-glow">
               <FileText className="mr-2 h-5 w-5" />
-              Upload Document
+              🎯 Try Demo Upload
             </Button>
-            <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-legal-primary">
+            <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-legal-primary hover:scale-105 transition-all duration-300">
               <Shield className="mr-2 h-5 w-5" />
-              View Analytics
+              ⚡ Quick Analysis
             </Button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-              <FileText className="h-8 w-8 mx-auto mb-2" />
-              <div className="text-2xl font-bold">2.5K+</div>
-              <div className="text-blue-100">Documents Analyzed</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-              <Shield className="h-8 w-8 mx-auto mb-2" />
-              <div className="text-2xl font-bold">98.7%</div>
-              <div className="text-blue-100">Risk Detection Accuracy</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-              <TrendingUp className="h-8 w-8 mx-auto mb-2" />
-              <div className="text-2xl font-bold">12+</div>
-              <div className="text-blue-100">Supported Languages</div>
+          
+          {/* Powered by Google Cloud Banner */}
+          <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 mb-6 border border-white/30 animate-scale-in">
+            <div className="flex items-center justify-center gap-4 text-white">
+              <span className="text-sm font-medium">⚡ Powered by Google Cloud Technologies:</span>
+              <div className="flex gap-3 text-xs">
+                <span className="bg-white/20 px-2 py-1 rounded">Gemini AI</span>
+                <span className="bg-white/20 px-2 py-1 rounded">Document AI</span>
+                <span className="bg-white/20 px-2 py-1 rounded">Translation API</span>
+                <span className="bg-white/20 px-2 py-1 rounded">Text-to-Speech</span>
+              </div>
             </div>
           </div>
         </div>

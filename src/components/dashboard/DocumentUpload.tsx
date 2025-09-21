@@ -67,7 +67,7 @@ const DocumentUpload = ({ onDocumentAnalyzed }: DocumentUploadProps) => {
       </CardHeader>
       <CardContent className="space-y-6">
         <div
-          className="border-2 border-dashed border-legal-gray-200 rounded-lg p-8 text-center hover:border-legal-primary transition-colors cursor-pointer"
+          className="border-2 border-dashed border-legal-gray-200 rounded-lg p-8 text-center hover:border-legal-primary hover:bg-legal-primary/5 transition-all duration-300 cursor-pointer group animate-fade-in"
           onClick={triggerFileInput}
           onDrop={(e) => {
             e.preventDefault();
@@ -87,17 +87,24 @@ const DocumentUpload = ({ onDocumentAnalyzed }: DocumentUploadProps) => {
           {isUploading ? (
             <div className="space-y-4">
               <div className="animate-spin h-12 w-12 border-4 border-legal-primary border-t-transparent rounded-full mx-auto"></div>
-              <p className="text-legal-gray-900 font-medium">Analyzing document with AI...</p>
+              <p className="text-legal-gray-900 font-medium">🤖 Google AI is analyzing your document...</p>
+              <div className="flex justify-center gap-2 text-xs text-legal-gray-300">
+                <span>📄 Extracting text</span>
+                <span>•</span>
+                <span>🔍 Risk analysis</span>
+                <span>•</span>
+                <span>🌐 Language detection</span>
+              </div>
             </div>
           ) : (
             <div className="space-y-4">
-              <Upload className="h-12 w-12 text-legal-primary mx-auto" />
+              <Upload className="h-12 w-12 text-legal-primary mx-auto group-hover:scale-110 transition-transform duration-300" />
               <div>
                 <p className="text-legal-gray-900 font-medium mb-2">
-                  Drop your legal documents here or click to browse
+                  🎯 Drop your legal documents here or click to browse
                 </p>
                 <p className="text-legal-gray-300 text-sm">
-                  Supports PDF, DOC, DOCX, TXT files up to 20MB
+                  ⚡ Instant AI analysis • Supports PDF, DOC, DOCX, TXT • Up to 20MB
                 </p>
               </div>
             </div>
