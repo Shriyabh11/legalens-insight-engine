@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { MessageSquare, Send, Bot, User, FileText, Zap, Brain, Search } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,18 +19,22 @@ interface DocumentChatbotProps {
 }
 
 const DocumentChatbot = ({ hasDocument }: DocumentChatbotProps) => {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      type: 'assistant',
-      content: hasDocument 
-        ? '🤖 Hello! I\'ve analyzed your document using Google\'s AI. Ask me anything about:\n\n📋 Key clauses and terms\n⚠️ Risk factors and issues\n🌐 Translation needs\n📊 Summary insights\n\nWhat would you like to know?'
-        : '👋 Hi! I\'m your AI legal assistant powered by Google Cloud. Upload a document first, and I\'ll help you analyze contracts, identify risks, explain legal terms, and more!',
-      timestamp: new Date()
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+
+  useEffect(() => {
+    setMessages([
+      {
+        id: 1,
+        type: 'assistant',
+        content: hasDocument
+          ? '🤖 Hello! I\'ve analyzed your document using Google\'s AI. Ask me anything about:\n\n📋 Key clauses and terms\n⚠️ Risk factors and issues\n🌐 Translation needs\n📊 Summary insights\n\nWhat would you like to know?'
+          : '👋 Hi! I\'m your AI legal assistant powered by Google Cloud. Upload a document first, and I\'ll help you analyze contracts, identify risks, explain legal terms, and more!',
+        timestamp: new Date()
+      }
+    ]);
+  }, [hasDocument]);
 
   const quickActions = hasDocument ? [
     { icon: Search, text: "🔍 Find key risks", query: "What are the main risks in this document?" },
@@ -58,58 +63,40 @@ const DocumentChatbot = ({ hasDocument }: DocumentChatbotProps) => {
     setInputValue('');
     setIsTyping(true);
 
-    // Simulate AI response with Google technologies
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt: textToSend }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
       const aiResponse: Message = {
         id: messages.length + 2,
         type: 'assistant',
-        content: generateSmartResponse(textToSend, hasDocument),
+        content: data.generated_text,
         timestamp: new Date()
       };
       setMessages(prev => [...prev, aiResponse]);
+
+    } catch (error) {
+      const errorResponse: Message = {
+        id: messages.length + 2,
+        type: 'assistant',
+        content: 'Sorry, I am having trouble connecting to the AI. Please try again later.',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorResponse]);
+    } finally {
       setIsTyping(false);
-    }, 1200 + Math.random() * 800);
-  };
-
-  const generateSmartResponse = (question: string, hasDoc: boolean): string => {
-    const lowerQ = question.toLowerCase();
-    
-    if (!hasDoc) {
-      if (lowerQ.includes('work') || lowerQ.includes('analysis')) {
-        return '🚀 Here\'s how LegalLens AI works:\n\n1. **Document Upload** - Drop your PDF/DOC files\n2. **Google Document AI** - Extracts and structures text\n3. **Gemini Analysis** - Identifies risks, clauses, and issues\n4. **Multi-language Support** - Translation in 12+ languages\n5. **Interactive Chat** - Ask questions about your document\n\n✨ All powered by Google Cloud technologies!';
-      }
-      if (lowerQ.includes('capabilities') || lowerQ.includes('assistant')) {
-        return '🤖 **My AI Capabilities:**\n\n• 📄 **Document Analysis** - Contract review, risk assessment\n• 🔍 **PII Detection** - Find sensitive information\n• 🌐 **Translation** - 12+ languages including Hindi, Tamil, Telugu\n• 💬 **Legal Q&A** - Explain complex terms and clauses\n• ⚖️ **Risk Scoring** - Automated compliance checking\n• 📊 **Insights** - Key findings and recommendations\n\n*Powered by Google Gemini & Document AI*';
-      }
-      return '👋 Upload a legal document first, and I\'ll analyze it using Google\'s AI to help you understand risks, terms, and provide insights!';
     }
-
-    // Document-specific responses
-    if (lowerQ.includes('risk') || lowerQ.includes('danger')) {
-      return '⚠️ **Key Risks Identified:**\n\n🔴 **High Priority:**\n• Missing termination clauses (Lines 23-45)\n• Unclear liability limitations\n• Data protection gaps\n\n🟡 **Medium Priority:**\n• Payment terms need clarification\n• Intellectual property provisions incomplete\n\n💡 **Recommendation:** Review sections 4.2 and 7.1 for better legal protection.\n\n*Analysis powered by Google Gemini AI*';
-    }
-    
-    if (lowerQ.includes('summary') || lowerQ.includes('overview')) {
-      return '📋 **Document Summary:**\n\n**Type:** Service Agreement\n**Parties:** Company A ↔ Company B\n**Duration:** 2 years (renewable)\n**Value:** $50,000 annually\n\n**Key Terms:**\n• Monthly service delivery\n• 30-day termination notice\n• Limited liability clause present\n• IP ownership retained by provider\n\n**Risk Score:** 72/100 (Medium-Low Risk)\n\n🤖 *Analyzed using Google Document AI + Gemini*';
-    }
-    
-    if (lowerQ.includes('terms') || lowerQ.includes('explain')) {
-      return '🧠 **Legal Terms Explained:**\n\n**"Force Majeure"** - Events beyond reasonable control (natural disasters, war, etc.)\n\n**"Indemnification"** - One party protects another from legal claims/damages\n\n**"Limitation of Liability"** - Cap on damages one party can claim\n\n**"Intellectual Property"** - Patents, trademarks, copyrights owned by parties\n\n💡 Want me to explain any specific clause? Just ask!\n\n*Definitions powered by Google\'s legal knowledge base*';
-    }
-    
-    if (lowerQ.includes('missing') || lowerQ.includes('clause')) {
-      return '🔍 **Missing Standard Clauses:**\n\n❌ **Critical Missing:**\n• Data breach notification requirements\n• Dispute resolution mechanism\n• Governing law specification\n\n⚠️ **Recommended Additions:**\n• Confidentiality/NDA provisions\n• Performance benchmarks\n• Service level agreements (SLAs)\n\n✅ **Present & Good:**\n• Termination procedures\n• Payment terms\n• Basic liability coverage\n\n*Gap analysis by Google AI*';
-    }
-
-    // Default responses
-    const responses = [
-      '🔍 Based on my analysis using Google\'s AI, this document has moderate complexity with some areas requiring attention. The main concern is around liability clauses in section 4.',
-      '📊 Google Document AI found 23 key clauses in your document. The risk assessment shows 3 high-priority items and 7 medium-priority considerations.',
-      '🌐 This document is in English. I can translate key sections to Hindi, Tamil, Telugu, or 9+ other languages using Google Translate API.',
-      '⚖️ The legal structure appears sound, but I recommend reviewing the indemnification clause (page 3) and adding clearer termination procedures.'
-    ];
-    
-    return responses[Math.floor(Math.random() * responses.length)];
   };
 
   const handleQuickAction = (action: typeof quickActions[0]) => {
@@ -122,7 +109,7 @@ const DocumentChatbot = ({ hasDocument }: DocumentChatbotProps) => {
         <CardTitle className="flex items-center gap-2 text-legal-gray-900">
           <MessageSquare className="h-5 w-5 text-legal-primary" />
           📄 Document AI Assistant
-          <Badge variant="secondary" className="bg-legal-primary text-white ml-2 animate-pulse-glow">
+          <Badge variant="secondary">
             <Bot className="h-3 w-3 mr-1" />
             Google AI
           </Badge>

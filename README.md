@@ -1,73 +1,27 @@
-# Welcome to your Lovable project
+# LegalLens AI
 
-## Project info
+**URL**: https://legallens.lovable.dev/
 
-**URL**: https://lovable.dev/projects/8b8cb357-c3b0-4ed1-ae70-40b8f588cb3e
+## Project Info
 
-## How can I edit this code?
+LegalLens AI is a powerful tool designed to simplify legal document analysis for everyone. It leverages the power of Gemini 1.5 Flash to provide intelligent analysis, risk visualization, and actionable guidance on legal contracts, with a special focus on the Indian legal context.
 
-There are several ways of editing your application.
+## Features
 
-**Use Lovable**
+### Intelligent Analysis
+- **Advanced Clause Extraction:** Automatically identifies and extracts key clauses from legal documents.
+- **Risk Assessment:** Uses Gemini Pro to assess risks, detecting excessive deposits, hidden penalties, privacy overreach, and unfair clauses.
+- **Indian Legal Context:** Tailored to understand the nuances of Indian law.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/8b8cb357-c3b0-4ed1-ae70-40b8f588cb3e) and start prompting.
+### Risk Visualization
+- **Interactive Heatmaps:** Color-coded analysis to make complex legal risks immediately understandable.
+- **Risk Categorization:** Classifies risks into Critical, High, Medium, and Low categories.
+- **Visual Highlighting:** Problematic sections of the contract are visually highlighted for easy identification.
+- **Market Benchmarks:** Compares deposits and fees against market standards.
 
-Changes made via Lovable will be committed automatically to this repo.
+### Actionable Guidance
+- **Negotiation Scripts:** Generates scripts and alternative clauses to empower users in contract discussions.
+- **Template Messages:** Provides ready-to-use messages for landlords and lenders.
+- **Legal Escalation:** Recommends when to seek legal advice and provides guidance on the next steps.
+- **Multilingual Summaries:** Offers summaries in plain language across multiple languages.
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/8b8cb357-c3b0-4ed1-ae70-40b8f588cb3e) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)

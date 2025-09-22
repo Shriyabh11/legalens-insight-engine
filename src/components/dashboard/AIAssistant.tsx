@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { MessageSquare, Send, Bot, User, Lightbulb, FileSearch } from "lucide-react";
+
+import { useState, useRef } from "react";
+import { MessageSquare, Send, Bot, User, Lightbulb, Upload } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 interface Message {
   id: number;
@@ -28,53 +30,70 @@ const AIAssistant = () => {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [apiKey, setApiKey] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const sendMessage = async () => {
-    if (!inputValue.trim()) return;
+  const sendMessage = async (prompt?: string) => {
+    const messageContent = prompt || inputValue;
+    if (!messageContent.trim() || !apiKey.trim()) return;
 
     const newMessage: Message = {
       id: messages.length + 1,
       type: 'user',
-      content: inputValue
+      content: messageContent
     };
 
     setMessages(prev => [...prev, newMessage]);
-    setInputValue('');
+    if (!prompt) {
+      setInputValue('');
+    }
     setIsTyping(true);
 
-    // Simulate AI response
-    setTimeout(() => {
+    try {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      const result = await model.generateContent(messageContent);
+      const response = await result.response;
+      const text = response.text();
+
       const aiResponse: Message = {
         id: messages.length + 2,
         type: 'assistant',
-        content: generateAIResponse(inputValue),
-        suggestions: [
-          'Tell me more about liability clauses',
-          'What should I negotiate?',
-          'Are there any red flags?'
-        ]
+        content: text,
       };
       setMessages(prev => [...prev, aiResponse]);
+    } catch (error) {
+      console.error(error);
+      const aiResponse: Message = {
+        id: messages.length + 2,
+        type: 'assistant',
+        content: 'Sorry, I am having trouble connecting to the AI service. Please check your API key and try again.',
+      };
+      setMessages(prev => [...prev, aiResponse]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
-  };
-
-  const generateAIResponse = (question: string): string => {
-    const responses = [
-      'Based on the document analysis, I\'ve identified several key areas that require attention. The contract contains standard commercial terms but lacks specific provisions for data protection compliance.',
-      'The main risks I\'ve detected include unclear termination conditions and potential liability exposure. I recommend reviewing clauses 4.2 and 7.1 for better protection.',
-      'This document shows a moderate risk profile. The PII detection system found personal information that should be properly anonymized according to privacy regulations.',
-      'I\'ve analyzed the legal structure and found that while the agreement is generally sound, there are opportunities to strengthen your negotiating position in sections related to intellectual property rights.'
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
+    }
   };
 
   const handleSuggestionClick = (suggestion: string) => {
     setInputValue(suggestion);
   };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target?.result as string;
+        sendMessage(`Analyze the following document for risks and provide a summary:
+${content}`);
+      };
+      reader.readAsText(file);
+    }
+  };
+
   return (
-    <Card className="bg-gradient-legal-card border-legal-gray-200 h-[600px] flex flex-col">
+    <Card className="bg-gradient-legal-card border-legal-gray-200 h-[700px] flex flex-col">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-legal-gray-900">
           <MessageSquare className="h-5 w-5 text-legal-primary" />
@@ -85,9 +104,8 @@ const AIAssistant = () => {
           </Badge>
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent className="flex-1 flex flex-col space-y-4">
-        {/* Messages */}
         <div className="flex-1 overflow-y-auto space-y-4 pr-2">
           {messages.map((message) => (
             <div
@@ -99,7 +117,7 @@ const AIAssistant = () => {
                   <Bot className="h-4 w-4 text-white" />
                 </div>
               )}
-              
+
               <div className={`max-w-[80%] ${message.type === 'user' ? 'order-2' : ''}`}>
                 <div
                   className={`p-3 rounded-lg ${
@@ -108,9 +126,9 @@ const AIAssistant = () => {
                       : 'bg-legal-gray-50 text-legal-gray-900'
                   }`}
                 >
-                  <p className="text-sm">{message.content}</p>
+                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                 </div>
-                
+
                 {message.suggestions && (
                   <div className="mt-2 space-y-1">
                     {message.suggestions.map((suggestion, index) => (
@@ -126,7 +144,7 @@ const AIAssistant = () => {
                   </div>
                 )}
               </div>
-              
+
               {message.type === 'user' && (
                 <div className="flex-shrink-0 w-8 h-8 bg-legal-gray-200 rounded-full flex items-center justify-center order-1">
                   <User className="h-4 w-4 text-legal-gray-900" />
@@ -134,7 +152,7 @@ const AIAssistant = () => {
               )}
             </div>
           ))}
-          
+
           {isTyping && (
             <div className="flex gap-3">
               <div className="flex-shrink-0 w-8 h-8 bg-legal-primary rounded-full flex items-center justify-center">
@@ -151,7 +169,15 @@ const AIAssistant = () => {
           )}
         </div>
 
-        {/* Input */}
+        <div className="flex gap-2">
+          <Input
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+            placeholder="Enter your API Key"
+            className="flex-1"
+          />
+        </div>
+
         <div className="flex gap-2">
           <Input
             value={inputValue}
@@ -160,12 +186,29 @@ const AIAssistant = () => {
             onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
             className="flex-1"
           />
-          <Button 
-            onClick={sendMessage} 
-            disabled={!inputValue.trim() || isTyping}
+          <Button
+            onClick={() => sendMessage()}
+            disabled={!inputValue.trim() || isTyping || !apiKey.trim()}
             className="bg-legal-primary hover:bg-legal-primary-dark"
           >
             <Send className="h-4 w-4" />
+          </Button>
+        </div>
+        
+        <div>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="hidden"
+          />
+          <Button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isTyping || !apiKey.trim()}
+            className="w-full bg-legal-secondary hover:bg-legal-secondary-dark"
+          >
+            <Upload className="h-4 w-4 mr-2" />
+            Upload and Analyze for Risk
           </Button>
         </div>
       </CardContent>
